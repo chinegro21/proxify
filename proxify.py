@@ -1,3 +1,10 @@
+# Created by Somdev Sangwan
+# Taken from https://github.com/UltimateHackers/proxify/blob/master/proxify.py
+# with slight modifications by Marcus Agard
+# His installation instructions don't work
+
+
+
 import requests
 import re
 import random
@@ -34,6 +41,7 @@ def many(): # function to fetch many proxies. Returns list.
 def get(number): # function to fetch specific number of proxies. Returns list.
 	proxies = [] # list to store proxies, obvious lmao
 	if number > 300: # Maximum number of proxies we can fetch in one is 300
+		print("Maximum number of returnable proxies is 300. Fetching 300 proxies")
 		number = 300
 	matches = make_request()[:number] # fetching n items from the "valueable stuff" list
 	for match in matches: # iterating over the n items
@@ -46,3 +54,20 @@ def get(number): # function to fetch specific number of proxies. Returns list.
 			typ = 'http'
 		proxies.append(typ + '://' + ip_address + ':' + port)
 	return proxies
+
+def verify(proxy):
+	test_url = 'http://www.icanhazip.com'
+	test_proxy = {proxy.split(':')[0]: proxy}
+	try:
+		resp = requests.get(test_url, proxies=test_proxy, timeout=60)
+		resp.raise_for_status()
+	except:
+		return False
+	else:
+		return True
+
+def format(proxy):
+	"""
+	Return the proxy in a format useable by requests
+	"""
+	return {proxy.split(':')[0]: proxy}
